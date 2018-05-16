@@ -8,15 +8,9 @@ public class SortedIntegers {
     @                           arr[i-1] <= arr[i]);
     @*/
 	
+	private /*@ spec_public @*/ int arr[];
+	private /*@ spec_public @*/ int capacity, size = 0;
 	
-	private int arr[];
-	private int capacity, size = 0;
-	
-	/*	@ public normal_behavior
-		@ requires capacity>0;
-		@ ensures arr.lenght==capacity;
-		@ ensures size==0;
-		@ */
 	public SortedIntegers(int capacity) {
 		this.capacity = capacity;
 		this.arr = new int[capacity];
@@ -24,35 +18,37 @@ public class SortedIntegers {
 	
 	/*	@ public normal_behavior
 		@ requires size<capacity;
-		@ ensures this.contains(elem);
 		@ ensures size == \old(size)+1;
 		@ ensures (\forall int i; i!=elem; contains(i) <==> \old(contains(i)));
+		@ ensures \old(!contains(elem)) => contains(elem);
 		@
 		@ also
 		@
 		@ public normal_behavior
 		@ requires size==capacity;
 		@ ensures size == \old(size);
-		@ ensures (\forall int i; i!=elem; contains(i) <==> \old(contains(i)));
+		@ ensures (\forall int i; ; contains(i) <==> \old(contains(i)));
 		@ */
 	public void add(int elem) {
-		if(size<capacity) {
-			int t = elem;
-			int swap, idx=0;
-			while(idx<size) {
-				if(arr[idx]>elem) {
-					size++;
-					idx++;
-					break;
-				}
-				idx++;
+		if(size==capacity) {	return;	}
+		int begin=0, end=size, target=-1, idx;
+		while(begin!=end) {
+			if(arr[begin+end/2]==elem) {
+				target = begin+end/2;
+				break;
+			} else if(arr[begin+end/2]>elem) {
+				end = (begin+end/2)-1;
+			} else {
+				begin = (begin+end/2)+1;
 			}
-			while(idx<size) {
-				swap = arr[idx]; 
-				arr[idx] = t;
-				t = swap;
-				idx++;
+		}
+		target = (arr[begin]<elem)? begin+1 : begin;
+		if(target>=0) {
+			idx=size++;
+			while(idx>=target){
+				arr[idx] = arr[--idx];
 			}
+			arr[target] = elem;
 		}
 	}
 	
@@ -64,22 +60,28 @@ public class SortedIntegers {
 		@ also
 		@
 		@ public normal_behavior
-	 	@ requires contains(elem);
-		@ ensures size == \old(size)-1
+	 	@ requires !contains(elem);
+		@ ensures size == \old(size)
 		@ ensures (\forall int i; i!=elem; contains(i) <==> \old(contains(i)));
 		@ */
 	public void remove(int elem) {
-		int idx=0;
-		while(idx<size) {
-			if(arr[idx]==elem) {
+		int begin=0, end=size, target=-1;
+		while(begin!=end) {
+			if(arr[begin+end/2]==elem) {
+				target = begin+end/2;
 				break;
+			} else if(arr[begin+end/2]>elem) {
+				end = (begin+end/2)-1;
+			} else {
+				begin = (begin+end/2)+1;
 			}
-			idx++;
 		}
-		if(idx<size) {
-			while(idx<size-1) {
-				arr[idx] = arr[idx+1];
-				idx++;
+		if(arr[begin]==elem){
+			target = begin;
+		}
+		if(target>=0) {
+			while(target<size-1) {
+				arr[target] = arr[++target];
 			}
 			size--;
 		}
@@ -89,40 +91,52 @@ public class SortedIntegers {
 		@ ensures size == \old(size)
 		@ ensures \result == (\exists int i; i>=0 && i<=size; arr[i]==elem);
 	*/
-	public boolean contains(int elem) {
-		for(int idx=0 ; idx<size ; idx++) {
-			if(arr[idx]==elem) {
+	public /*@ pure @*/ boolean contains(int elem) {
+		int begin=0, end=size;
+		while(begin!=end) {
+			if(arr[begin+end/2]==elem) {
 				return true;
+			} else if(arr[begin+end/2]>elem) {
+				end = (begin+end/2)-1;
+			} else {
+				begin = (begin+end/2)+1;
 			}
 		}
-		return false;
-	}
-	
-	/*	Não sei o que esse metodo deve fazer.
-	 */
-	public int max() {
-		return 0;
+		return arr[begin]==elem;
 	}
 	
 	/*	@ public normal_behavior
-		@ ensures size == \old(size)
-		@ ensures (\forall int i; ; contains(i) <==> \old(contains(i)));
+		@ requires size>0;
+		@ ensures 	(\exists int idx; idx>=0 && idx<size; arr[idx]==\result && 
+		@ 					!(\forall int idy; idy>=0 && idy<size; !(arr[idy]>arr[idx]))
+		@ 			);
+	 */
+	public /*@ pure @*/ int max() {
+		return arr[size-1];
+	}
+	
+	/*	@ public normal_behavior
 		@ ensures \result == size
 	*/
-	public int getSize() {
+	public /*@ pure @*/ int getSize() {
 		return size;
 	}
 	
 	/*	@ public normal_behavior
-		@ ensures size == \old(size)
-		@ ensures (\forall int i; ; contains(i) <==> \old(contains(i)));
 		@ ensures \result == capacity
 	*/
-	public int getCapacity() {
+	public /*@ pure @*/ int getCapacity() {
 		return capacity;
 	}
 	
 	public String toString() {
 		return Arrays.toString(arr);
+	}
+	
+	/*	@ public normal_behavior
+		@ ensures \result == 1; 
+	 */
+	public int a() {
+		return 2;
 	}
 }

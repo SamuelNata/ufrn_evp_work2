@@ -8,12 +8,19 @@ public class SortedIntegers {
     @                           arr[i-1] <= arr[i]);
     @*/
 	
-	private /*@ spec_public @*/ int arr[];
-	private /*@ spec_public @*/ int capacity, size = 0;
+	private /*@ spec_public @*/ int arr[] = null;
+	private /*@ spec_public @*/ int capacity;
+	private /*@ spec_public @*/ int size = 0;
 	
+	/*	@ public normal_behavior
+	  	@ requires capacity>0;
+	 	@ ensures this.capacity==capacity;
+	 	@ ensures arr!=null;
+	 	@ ensures arr.length()==this.capacity;
+	 	@ */
 	public SortedIntegers(int capacity) {
 		this.capacity = capacity;
-		this.arr = new int[capacity];
+		this.arr = new int[this.capacity];
 	}
 	
 	/*	@ public normal_behavior
@@ -33,13 +40,13 @@ public class SortedIntegers {
 		if(size==capacity) {	return;	}
 		int begin=0, end=size, target=-1, idx;
 		while(begin!=end) {
-			if(arr[begin+end/2]==elem) {
-				target = begin+end/2;
+			if(arr[(begin+end)/2]==elem) {
+				target = (begin+end)/2;
 				break;
-			} else if(arr[begin+end/2]>elem) {
-				end = (begin+end/2)-1;
+			} else if(arr[(begin+end)/2]>elem) {
+				end = (begin+end)/2-1;
 			} else {
-				begin = (begin+end/2)+1;
+				begin = (begin+end)/2+1;
 			}
 		}
 		target = (arr[begin]<elem)? begin+1 : begin;
@@ -67,13 +74,13 @@ public class SortedIntegers {
 	public void remove(int elem) {
 		int begin=0, end=size, target=-1;
 		while(begin!=end) {
-			if(arr[begin+end/2]==elem) {
-				target = begin+end/2;
+			if(arr[(begin+end)/2]==elem) {
+				target = (begin+end)/2;
 				break;
-			} else if(arr[begin+end/2]>elem) {
-				end = (begin+end/2)-1;
+			} else if(arr[(begin+end)/2]>elem) {
+				end = (begin+end)/2-1;
 			} else {
-				begin = (begin+end/2)+1;
+				begin = (begin+end)/2+1;
 			}
 		}
 		if(arr[begin]==elem){
@@ -96,10 +103,10 @@ public class SortedIntegers {
 		while(begin!=end) {
 			if(arr[begin+end/2]==elem) {
 				return true;
-			} else if(arr[begin+end/2]>elem) {
-				end = (begin+end/2)-1;
+			} else if(arr[(begin+end)/2]>elem) {
+				end = (begin+end)/2-1;
 			} else {
-				begin = (begin+end/2)+1;
+				begin = (begin+end)/2+1;
 			}
 		}
 		return arr[begin]==elem;

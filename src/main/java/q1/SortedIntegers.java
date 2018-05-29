@@ -3,10 +3,8 @@ package q1;
 import java.util.Arrays;
 
 public class SortedIntegers {
-    /*@ public invariant (\forall int i;
-    @                           0 < i && i < size;
-    @                           arr[i-1] <= arr[i]);
-    @*/
+    /*	@ public invariant (\forall int i; 0 < i && i < size; arr[i-1] <= arr[i]);
+	    @ */
 	
 	private /*@ spec_public @*/ int arr[] = null;
 	private /*@ spec_public @*/ int capacity;
@@ -147,3 +145,56 @@ public class SortedIntegers {
 		return 2;
 	}
 }
+
+
+/*
+1) b) Explique no relatório por que é útil usar invariantes; Ao explicá-lo, dê um exemplo concreto usando a especificação do método de adicionar ou remover.
+
+R: 	As invariantes no JML são uteis para evitar a reescrita de pré e pós condições em todos os metodos da classe, 
+	já que devem ser sempre atendidas antes e depois da execução dos metodos.
+	Na classe SortedIntegers, que representa um container, o metodo contains verifica se um inteiro pertence ao container,
+	para realizar essa tarefa de forma mais rapida podemos utilizar busca binaria, porem precisamos que o array esteja ordenado
+	então criamos este invariante, para verificar e garantir que os metodos que alteram o container irão mante-lo ordenado.
+	A exemplo do metodo add, que adiciona um inteiro ao container, a busca binaria nos ajuda a encontrar o local onde o inteiro
+	deve ser inserido no container para mante-lo ordenado, portanto a ordenação do array deve ser uma pré condição, e para que essa caracteristica possa
+	ser utilizada novamente no futuro, é necesspario que seja mantida após a execução do metodo, logo deve ser uma pós condição.
+	Abaixo está a especificação das pré e pós condições do metodo add com o invariante replicado em cada metodo e com invariante na classe:
+	
+		//Com invariate replicado em casa metodo:
+			@ public normal_behavior
+			@ requires size<capacity;
+			@ requires (\forall int i; 0 < i && i < size; arr[i-1] <= arr[i]);
+			@ ensures size == \old(size)+1;
+			@ ensures (\forall int i; i!=elem; contains(i) <==> \old(contains(i)));
+			@ ensures \old(!contains(elem)) => contains(elem);
+			@ ensures (\forall int i; 0 < i && i < size; arr[i-1] <= arr[i]);
+			@ also
+			@
+			@ public normal_behavior
+			@ requires size==capacity;
+			@ requires (\forall int i; 0 < i && i < size; arr[i-1] <= arr[i]);
+			@ ensures size == \old(size);
+			@ ensures (\forall int i; ; contains(i) <==> \old(contains(i)));
+			@ ensures (\forall int i; 0 < i && i < size; arr[i-1] <= arr[i]);
+			
+			
+		//Com invariante na classe:
+			@ public normal_behavior
+			@ requires size<capacity;
+			@ ensures size == \old(size)+1;
+			@ ensures (\forall int i; i!=elem; contains(i) <==> \old(contains(i)));
+			@ ensures \old(!contains(elem)) => contains(elem);
+			@
+			@ also
+			@
+			@ public normal_behavior
+			@ requires size==capacity;
+			@ ensures size == \old(size);
+			@ ensures (\forall int i; ; contains(i) <==> \old(contains(i)));
+			@
+*/
+
+
+
+
+

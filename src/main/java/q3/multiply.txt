@@ -1,0 +1,186 @@
+Hoare triple to prove:
+
+pre = { n = n0 && m = m0 }
+.. implementation ..
+pos = { res=n0*m0 && n=0 }
+
+Implementation:
+
+res = 0;  
+if (n < 0) {
+   	n = -n;
+   	m = -m;
+} else {
+	// nothing
+}
+while (n > 0) {
+  	res = res + m;
+   	n = n - 1;
+}
+
+Proof (with abbreviations):
+
+<pre>
+if (n < 0) {
+   	n = -n;
+   	m = -m;
+} else {
+	// nothing
+}
+...
+<pos>
+
+_________________________________ Assignment
+
+<pre> 
+[res := 0]
+if (n < 0) {
+   	n = -n;
+   	m = -m;
+} else {
+	// nothing
+} 
+...
+<pos>
+
+_________________________________ Conditional, then-branch
+
+<pre>  & n < 0
+[res := 0]
+	n = -n;
+   	m = -m; 
+...
+<pos>
+
+_________________________________ Assignment
+
+<pre>  & n < 0
+[res := 0, n = -n, m = -m]
+
+while (n > 0) {
+  	res = res + m;
+   	n = n - 1;
+}
+<pos>
+
+_________________________________ Loop with I = n0*m0 = m*n + res
+_________________________________ Invariant Initially Valid
+
+n = n0 && m = m0 & n < 0 ->
+[res := 0, n = -n, m = -m]
+n0*m0 = m*n + res 
+
+_________________________________ Update application
+
+n = n0 && m = m0 & n < 0 ->
+[res := 0, n = -n, m = -m]
+n0*m0 = m*n + 0
+
+_________________________________ Simplify
+
+n = n0 && m = m0 & n < 0 ->
+[res := 0, n = -n, m = -m]
+n0*m0 = m*n 
+
+_________________________________ FOL 
+_________________________________ Invariant Preserverd
+
+
+{ n0*m0 = m*n + res & n > 0 }
+  res = res + m;
+  n = n - 1;
+{ n0*m0 = m*n + res }
+
+_________________________________ Assignment (twice)
+
+
+{ n0*m0 = m*n + res & n > 0 }
+  [res = res + m, n = n - 1]
+{ n0*m0 = m*n + res }
+
+_________________________________ Update paralellization 
+
+{ n0*m0 = m*n + res & n > 0 }
+  [res = res + m || n = n - 1]
+{ n0*m0 = m*n + res }
+
+_________________________________ Exit
+
+ n0*m0 = m*n + res & n > 0 -> 
+ "res = res + m || n = n - 1"
+ n0*m0 = m*n + res 
+
+_________________________________ Update Aplication 
+
+n0*m0 = m*n + res & n > 0 -> 
+n0*m0 = m*(n - 1) + (res + m) 
+
+_________________________________ FOL, in particular:
+
+n0*m0 = m*(n - 1) + (res + m)  (TRIVIAL)
+
+_________________________________ Conditional, else-branch
+
+<pre>  & (n >= 0)
+[res := 0]
+while (n > 0) {
+  	res = res + m;
+   	n = n - 1;
+}
+<pos>
+
+_________________________________ Loop with I = n0*m0 = m*n + res
+_________________________________ Invariant Initially Valid
+
+n = n0 && m = m0 & n < 0 ->
+[res := 0]
+n0*m0 = m*n + res 
+
+_________________________________ Update application
+
+n = n0 && m = m0 & n < 0 ->
+[res := 0]
+n0*m0 = m*n + 0
+
+_________________________________ Simplify
+
+n = n0 && m = m0 & n < 0 ->
+[res := 0]
+n0*m0 = m*n 
+
+_________________________________ FOL 
+_________________________________ Invariant Preserverd
+
+
+{ n0*m0 = m*n + res & n > 0 }
+  res = res + m;
+  n = n - 1;
+{ n0*m0 = m*n + res }
+
+_________________________________ Assignment (twice)
+
+
+{ n0*m0 = m*n + res & n > 0 }
+  [res = res + m, n = n - 1]
+{ n0*m0 = m*n + res }
+
+_________________________________ Update paralellization 
+
+{ n0*m0 = m*n + res & n > 0 }
+  [res = res + m || n = n - 1]
+{ n0*m0 = m*n + res }
+
+_________________________________ Exit
+
+ n0*m0 = m*n + res & n > 0 -> 
+ "res = res + m || n = n - 1"
+ n0*m0 = m*n + res 
+
+_________________________________ Update Aplication 
+
+n0*m0 = m*n + res & n > 0 -> 
+n0*m0 = m*(n - 1) + (res + m) 
+
+_________________________________ FOL, in particular:
+
+n0*m0 = m*(n - 1) + (res + m)  (TRIVIAL)

@@ -17,6 +17,7 @@ while (n > 0) {
   	res = res + m;
    	n = n - 1;
 }
+return res
 
 Proof (with abbreviations):
 
@@ -63,62 +64,105 @@ while (n > 0) {
 }
 <pos>
 
-_________________________________ Loop with I = n0*m0 = m*n + res
+_________________________________ Loop with I = n0*m0 = m*n + res && n>=0
 _________________________________ Invariant Initially Valid
 
-n = n0 && m = m0 & n < 0 ->
+n = n0 && m = m0 & n > 0 ->
 [res := 0, n = -n, m = -m]
-n0*m0 = m*n + res 
+n0*m0 = m*n + res & n>=0
 
 _________________________________ Update application
 
-n = n0 && m = m0 & n < 0 ->
+n = n0 && m = m0 & n > 0 ->
 [res := 0, n = -n, m = -m]
-n0*m0 = m*n + 0
+n0*m0 = m*n + 0 & n>=0
 
 _________________________________ Simplify
 
-n = n0 && m = m0 & n < 0 ->
+n = n0 && m = m0 & n > 0 ->
 [res := 0, n = -n, m = -m]
-n0*m0 = m*n 
+n0*m0 = m*n & n>=0
 
-_________________________________ FOL 
+_________________________________ FOL and FOL
 _________________________________ Invariant Preserverd
 
 
 { n0*m0 = m*n + res & n > 0 }
   res = res + m;
   n = n - 1;
-{ n0*m0 = m*n + res }
+{ n0*m0 = m*n + res & n>=0 }
 
 _________________________________ Assignment (twice)
 
 
 { n0*m0 = m*n + res & n > 0 }
   [res = res + m, n = n - 1]
-{ n0*m0 = m*n + res }
+{ n0*m0 = m*n + res & n>=0 }
 
 _________________________________ Update paralellization 
 
 { n0*m0 = m*n + res & n > 0 }
   [res = res + m || n = n - 1]
-{ n0*m0 = m*n + res }
+{ n0*m0 = m*n + res & n>=0 }
 
 _________________________________ Exit
 
  n0*m0 = m*n + res & n > 0 -> 
  "res = res + m || n = n - 1"
- n0*m0 = m*n + res 
+ n0*m0 = m*n + res & n>=0
 
 _________________________________ Update Aplication 
 
 n0*m0 = m*n + res & n > 0 -> 
-n0*m0 = m*(n - 1) + (res + m) 
+n0*m0 = m*(n - 1) + (res + m) & n>=0
 
-_________________________________ FOL, in particular:
+_________________________________ Distributive 
 
-n0*m0 = m*(n - 1) + (res + m)  (TRIVIAL)
+n0*m0 = m*n + res & n > 0 -> 
+n0*m0 = m*n - m*1 + res + m & n>=0
 
+_________________________________ Canceling -m +m 
+
+n0*m0 = m*n + res & n > 0 -> 
+n0*m0 = m*n + res & n>=0
+
+_________________________________ FOL and FOL
+_________________________________ Use Case
+
+{n0*m0 = m*n + res & n>=0 & n<=0}
+{ res=n0*m0 && n=0 }
+
+_________________________________ Exit
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res=n0*m0 && n=0
+
+_________________________________ From n>=0 & n<=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res=n0*m0 && True
+
+_________________________________ From n0*m0=m*n+res & n=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res=n0*m0 && True
+
+_________________________________ From a+0=a
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res + 0 = n0*m0 && True
+
+_________________________________ From a*0=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res + m*0 = n0*m0 && True
+
+_________________________________ From n=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res + m*n = n0*m0 && True
+
+_________________________________ FOL
 _________________________________ Conditional, else-branch
 
 <pre>  & (n >= 0)
@@ -129,58 +173,102 @@ while (n > 0) {
 }
 <pos>
 
-_________________________________ Loop with I = n0*m0 = m*n + res
+_________________________________ Loop with I = n0*m0 = m*n + res & n>=0
 _________________________________ Invariant Initially Valid
 
-n = n0 && m = m0 & n < 0 ->
+n = n0 && m = m0 & n > 0 ->
 [res := 0]
-n0*m0 = m*n + res 
+n0*m0 = m*n + res & n>=0
 
 _________________________________ Update application
 
-n = n0 && m = m0 & n < 0 ->
+n = n0 && m = m0 & n > 0 ->
 [res := 0]
-n0*m0 = m*n + 0
+n0*m0 = m*n + 0 & n>=0
 
 _________________________________ Simplify
 
-n = n0 && m = m0 & n < 0 ->
+n = n0 && m = m0 & n > 0 ->
 [res := 0]
-n0*m0 = m*n 
+n0*m0 = m*n & n>=0
 
-_________________________________ FOL 
+_________________________________ FOL and FOL
 _________________________________ Invariant Preserverd
 
 
 { n0*m0 = m*n + res & n > 0 }
   res = res + m;
   n = n - 1;
-{ n0*m0 = m*n + res }
+{ n0*m0 = m*n + res & n>=0 }
 
 _________________________________ Assignment (twice)
 
 
 { n0*m0 = m*n + res & n > 0 }
   [res = res + m, n = n - 1]
-{ n0*m0 = m*n + res }
+{ n0*m0 = m*n + res & n>=0 }
 
 _________________________________ Update paralellization 
 
 { n0*m0 = m*n + res & n > 0 }
   [res = res + m || n = n - 1]
-{ n0*m0 = m*n + res }
+{ n0*m0 = m*n + res & n>=0 }
 
 _________________________________ Exit
 
  n0*m0 = m*n + res & n > 0 -> 
  "res = res + m || n = n - 1"
- n0*m0 = m*n + res 
+ n0*m0 = m*n + res & n>=0
 
 _________________________________ Update Aplication 
 
 n0*m0 = m*n + res & n > 0 -> 
-n0*m0 = m*(n - 1) + (res + m) 
+n0*m0 = m*(n - 1) + (res + m) & n>=0
 
-_________________________________ FOL, in particular:
+_________________________________ Distributive 
 
-n0*m0 = m*(n - 1) + (res + m)  (TRIVIAL)
+n0*m0 = m*n + res & n > 0 -> 
+n0*m0 = m*n - m*1 + res + m & n>=0
+
+_________________________________ Canceling -m +m 
+
+n0*m0 = m*n + res & n > 0 -> 
+n0*m0 = m*n + res & n>=0
+
+_________________________________ FOL and FOL
+_________________________________ Use Case
+
+{n0*m0 = m*n + res & n>=0 & n<=0}
+{ res=n0*m0 && n=0 }
+
+_________________________________ Exit
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res=n0*m0 && n=0
+
+_________________________________ From n>=0 & n<=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res=n0*m0 && True
+
+_________________________________ From n0*m0=m*n+res & n=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res=n0*m0 && True
+
+_________________________________ From a+0=a
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res + 0 = n0*m0 && True
+
+_________________________________ From a*0=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res + m*0 = n0*m0 && True
+
+_________________________________ From n=0
+
+n0*m0 = m*n + res & n>=0 & n<=0 ->
+res + m*n = n0*m0 && True
+
+_________________________________ FOL
